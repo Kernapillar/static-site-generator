@@ -18,5 +18,3 @@ class LeafNode(HTMLNode):
             props = ""
         html = f'<{self.tag}{props}>{self.value}</{self.tag}>'
         return html 
-
-        
