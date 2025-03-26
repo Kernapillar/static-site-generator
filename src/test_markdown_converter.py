@@ -1,7 +1,7 @@
 import unittest
 
 from textnode import TextNode, TextType
-from markdown_converter import split_nodes_delimiter
+from markdown_converter import split_nodes_delimiter, extract_markdown_images, extract_markdown_links
 
 
 class TestMarkdownConverter(unittest.TestCase):
@@ -72,6 +72,23 @@ class TestMarkdownConverter(unittest.TestCase):
             ],
             new_nodes,
         )
+
+    def test_regex_image(self): 
+        text = "This is text with a ![rick roll](https://i.imgur.com/aKaOqIh.gif) and ![obi wan](https://i.imgur.com/fJRm4Vk.jpeg)"
+        self.assertEqual(extract_markdown_images(text), [("rick roll", "https://i.imgur.com/aKaOqIh.gif"), ("obi wan", "https://i.imgur.com/fJRm4Vk.jpeg")])
+
+    def test_regex_image2(self): 
+        text = "This is text with a ![AltText here](https://i.imgur.com/alttext_test.gif) and ![SecondTry](https://i.imgur.com/rashek.jpeg)"
+        self.assertEqual(extract_markdown_images(text), [("AltText here", "https://i.imgur.com/alttext_test.gif"), ("SecondTry", "https://i.imgur.com/rashek.jpeg")])
+
+    def test_regex_link(self): 
+        text = "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        self.assertEqual(extract_markdown_links(text), [("to boot dev", "https://www.boot.dev"), ("to youtube", "https://www.youtube.com/@bootdotdev")])
+
+    def test_regex_link2(self): 
+        text = "This is text with a link ![to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
+        self.assertEqual(extract_markdown_links(text), [("to youtube", "https://www.youtube.com/@bootdotdev")])
+        
 
 
 if __name__ == "__main__":
