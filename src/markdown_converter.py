@@ -36,10 +36,10 @@ def split_nodes_image(old_nodes):
         if len(images) == 0: 
             new_nodes.append(node)
             continue
-        new_nodes.extend(extraction(node.text, images))
+        new_nodes.extend(image_extraction(node.text, images))
     return new_nodes
 
-def extraction(text, images):
+def image_extraction(text, images):
     result = [] 
     if len(images) == 0 or len(text) == 0: 
         return 
@@ -48,7 +48,31 @@ def extraction(text, images):
     if len(split[0]) > 0:
         result.append(TextNode(split[0], TextType.TEXT))
     result.append(TextNode(alt_code, TextType.IMAGE, image_url))
-    next =  extraction(split[1], images[1:])
+    next =  image_extraction(split[1], images[1:])
+    if next != None: 
+        result += next
+    return result 
+
+def split_nodes_link(old_nodes): 
+    new_nodes = []
+    for node in old_nodes: 
+        links = extract_markdown_links(node.text)
+        if len(links) == 0: 
+            new_nodes.append(node)
+            continue
+        new_nodes.extend(link_extraction(node.text, links))
+    return new_nodes
+
+def link_extraction(text, links):
+    result = [] 
+    if len(links) == 0 or len(text) == 0: 
+        return 
+    alt_code, image_url = links[0]
+    split = text.split(f"[{alt_code}]({image_url})")
+    if len(split[0]) > 0:
+        result.append(TextNode(split[0], TextType.TEXT))
+    result.append(TextNode(alt_code, TextType.IMAGE, image_url))
+    next =  link_extraction(split[1], links[1:])
     if next != None: 
         result += next
     return result 
