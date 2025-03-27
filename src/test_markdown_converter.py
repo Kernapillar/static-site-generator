@@ -89,7 +89,6 @@ class TestMarkdownConverter(unittest.TestCase):
         text = "This is text with a link ![to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
         self.assertEqual(extract_markdown_links(text), [("to youtube", "https://www.youtube.com/@bootdotdev")])
 
-
     def test_split_images(self):
         node = TextNode(
             "This is text with an ![image](https://i.imgur.com/zjjcJKZ.png) and another ![second image](https://i.imgur.com/3elNhQu.png)",
@@ -145,6 +144,23 @@ class TestMarkdownConverter(unittest.TestCase):
         self.assertListEqual(
             [
                 TextNode("This is text without an image", TextType.TEXT),
+            ],
+            new_nodes,
+        )
+
+    def test_split_images(self):
+        node = TextNode(
+            "![starts with image](https://i.imgur.com/zjjcJKZ.png) and ends with another image ![second image](https://i.imgur.com/3elNhQu.png)",
+            TextType.TEXT,
+        )
+        new_nodes = split_nodes_image([node])
+        self.assertListEqual(
+            [
+                TextNode("starts with image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode(" and ends with another image ", TextType.TEXT),
+                TextNode(
+                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                ),
             ],
             new_nodes,
         )
