@@ -148,7 +148,7 @@ class TestMarkdownConverter(unittest.TestCase):
             new_nodes,
         )
 
-    def test_split_images(self):
+    def test_split_images2(self):
         node = TextNode(
             "![starts with image](https://i.imgur.com/zjjcJKZ.png) and ends with another image ![second image](https://i.imgur.com/3elNhQu.png)",
             TextType.TEXT,
@@ -165,8 +165,6 @@ class TestMarkdownConverter(unittest.TestCase):
             new_nodes,
         )
 
-# LINK VERSION BELOW: 
-
     def test_split_links(self):
         node = TextNode(
             "This is text with an [image](https://i.imgur.com/zjjcJKZ.png) and another [second image](https://i.imgur.com/3elNhQu.png)",
@@ -179,7 +177,7 @@ class TestMarkdownConverter(unittest.TestCase):
                 TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
                 TextNode(" and another ", TextType.TEXT),
                 TextNode(
-                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                    "second image", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
                 ),
             ],
             new_nodes,
@@ -198,16 +196,16 @@ class TestMarkdownConverter(unittest.TestCase):
         self.assertListEqual(
             [
                 TextNode("This is text with an ", TextType.TEXT),
-                TextNode("image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode("image", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
                 TextNode(" and another ", TextType.TEXT),
                 TextNode(
-                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                    "second image", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
                 ),
                 TextNode("This is another text with an ", TextType.TEXT),
-                TextNode("image2", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ2.png"),
+                TextNode("image2", TextType.LINK, "https://i.imgur.com/zjjcJKZ2.png"),
                 TextNode(" and another ", TextType.TEXT),
                 TextNode(
-                    "second image2", TextType.IMAGE, "https://i.imgur.com/3elNhQu2.png"
+                    "second image2", TextType.LINK, "https://i.imgur.com/3elNhQu2.png"
                 ),
             ],
             new_nodes,
@@ -226,7 +224,7 @@ class TestMarkdownConverter(unittest.TestCase):
             new_nodes,
         )
 
-    def test_split_links(self):
+    def test_split_links2(self):
         node = TextNode(
             "[starts with image](https://i.imgur.com/zjjcJKZ.png) and ends with another image [second image](https://i.imgur.com/3elNhQu.png)",
             TextType.TEXT,
@@ -234,15 +232,30 @@ class TestMarkdownConverter(unittest.TestCase):
         new_nodes = split_nodes_link([node])
         self.assertListEqual(
             [
-                TextNode("starts with image", TextType.IMAGE, "https://i.imgur.com/zjjcJKZ.png"),
+                TextNode("starts with image", TextType.LINK, "https://i.imgur.com/zjjcJKZ.png"),
                 TextNode(" and ends with another image ", TextType.TEXT),
                 TextNode(
-                    "second image", TextType.IMAGE, "https://i.imgur.com/3elNhQu.png"
+                    "second image", TextType.LINK, "https://i.imgur.com/3elNhQu.png"
                 ),
             ],
             new_nodes,
         )
 
+    def test_text_to_textnodes(self): 
+        text = "This is **text** with an _italic_ word and a `code block` and an ![obi wan image](https://i.imgur.com/fJRm4Vk.jpeg) and a [link](https://boot.dev)"
+        expected = [
+            TextNode("This is ", TextType.TEXT),
+            TextNode("text", TextType.BOLD),
+            TextNode(" with an ", TextType.TEXT),
+            TextNode("italic", TextType.ITALIC),
+            TextNode(" word and a ", TextType.TEXT),
+            TextNode("code block", TextType.CODE),
+            TextNode(" and an ", TextType.TEXT),
+            TextNode("obi wan image", TextType.IMAGE, "https://i.imgur.com/fJRm4Vk.jpeg"),
+            TextNode(" and a ", TextType.TEXT),
+            TextNode("link", TextType.LINK, "https://boot.dev"),
+        ]
+        self.assertListEqual(expected, text_to_textnodes(text))
 
 
 if __name__ == "__main__":
