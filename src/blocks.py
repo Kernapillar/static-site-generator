@@ -1,4 +1,8 @@
 from enum import Enum
+from htmlnode import *
+from textnode import *
+from parentnode import *
+from markdown_converter import text_to_textnodes
 class BlockType(Enum): 
     PARAGRAPH = "paragraph"
     HEADING = "heading"
@@ -37,3 +41,55 @@ def block_to_block_type(block):
         return BlockType.ORDEREDLIST
     else: 
         return BlockType.PARAGRAPH
+    
+def markdown_to_html_node(markdown): 
+    blocks = markdown_to_blocks(markdown)
+    child_list = []
+    for block in blocks: 
+        type = block_to_block_type(block)
+        match type: 
+            case BlockType.PARAGRAPH: 
+                normalized_text = " ".join(block.split())
+                children = text_to_children(normalized_text)
+                paragraph = ParentNode("p", children)
+                child_list.append(paragraph)
+            case BlockType.HEADING: 
+                header_num = eval_header(block)
+                block = block[header_num:]
+                normalized_text = " ".join(block.split())
+                children = text_to_children(normalized_text)
+                header = ParentNode(f"h{header_num}", children)
+                child_list.append(header)
+            case BlockType.CODE: 
+                block = block.strip("```").lstrip("\n")
+                textnode = TextNode(block, TextType.TEXT)
+                html_node = text_node_to_html_node(textnode)
+                code = ParentNode("code", [html_node])
+                pre = ParentNode("pre", [code])
+                child_list.append(pre)
+            case BlockType.QUOTE: 
+                pass
+            case BlockType.UNORDEREDLIST: 
+                pass
+            case BlockType.ORDEREDLIST: 
+                pass
+    parent = ParentNode("div", child_list)
+    return parent
+
+def text_to_children(text):
+    nodes = text_to_textnodes(text)
+    children = []
+    for node in nodes: 
+        html_node = text_node_to_html_node(node)
+        children.append(html_node)
+    return children
+
+def eval_header(block): 
+    count = 0 
+    for i in range(len(block)): 
+        if count >= 6: 
+            return 6
+        if block[i] == "#": 
+            count += 1
+        else: 
+            return count

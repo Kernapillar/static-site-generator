@@ -134,5 +134,62 @@ class TestMarkdownConverter(unittest.TestCase):
         type = block_to_block_type(block)
         self.assertEqual(type, BlockType.PARAGRAPH)
 
+    def test_paragraphs(self):
+        md = """
+    This is **bolded** paragraph
+    text in a p
+    tag here
+
+    This is another paragraph with _italic_ text and `code` here
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><p>This is <b>bolded</b> paragraph text in a p tag here</p><p>This is another paragraph with <i>italic</i> text and <code>code</code> here</p></div>",
+        )
+
+    def test_header(self):
+        md = """
+    ###This is **bolded** header
+    text in a p
+    tag here
+
+    #This is another header with _italic_ text and `code` here
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><h3>This is <b>bolded</b> header text in a p tag here</h3><h1>This is another header with <i>italic</i> text and <code>code</code> here</h1></div>",
+        )
+
+    def test_eval_header(self): 
+        block = "##### Should end up with 5"
+        self.assertEqual(eval_header(block), 5)
+
+    def test_eval_header2(self): 
+        block = "####### Should end up with 6, despite 7 hashtags "
+        self.assertEqual(eval_header(block), 6)
+
+    def test_codeblock(self):
+        md = """
+    ```
+    This is text that _should_ remain
+    the **same** even with inline stuff
+    ```
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
+        )
+
 if __name__ == "__main__":
     unittest.main()
