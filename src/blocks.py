@@ -1,3 +1,4 @@
+import re
 from enum import Enum
 from htmlnode import *
 from textnode import *
@@ -68,11 +69,20 @@ def markdown_to_html_node(markdown):
                 pre = ParentNode("pre", [code])
                 child_list.append(pre)
             case BlockType.QUOTE: 
-                pass
+                block = clean_lines(block, ">")
+                children = text_to_children(block)
+                quote = ParentNode("blockquote", children)
+                child_list.append(quote)
             case BlockType.UNORDEREDLIST: 
-                pass
+                lines = block.split("\n")
+                line_nodes = format_list(lines)
+                unordered_list = ParentNode("ul", line_nodes)
+                child_list.append(unordered_list)
             case BlockType.ORDEREDLIST: 
-                pass
+                lines = block.split("\n")
+                line_nodes = format_list(lines, True)
+                unordered_list = ParentNode("ol", line_nodes)
+                child_list.append(unordered_list)
     parent = ParentNode("div", child_list)
     return parent
 
@@ -93,3 +103,22 @@ def eval_header(block):
             count += 1
         else: 
             return count
+        
+def clean_lines(block, char): 
+    lines = block.split()
+    lines = list(map(lambda line: line.lstrip(f"{char}"), lines))
+    return " ".join(lines)
+
+def format_list(lines, ordered=False): 
+    new_lines = []
+    if not ordered: 
+        for line in lines: 
+            line = line[2:]
+            li_node = ParentNode("li", text_to_children(line))
+            new_lines.append(li_node)
+    else: 
+        for line in lines: 
+            line = re.sub(r"^\d+\.\s+", "", line)
+            li_node = ParentNode("li", text_to_children(line))
+            new_lines.append(li_node)
+    return new_lines

@@ -191,5 +191,66 @@ class TestMarkdownConverter(unittest.TestCase):
             "<div><pre><code>This is text that _should_ remain\nthe **same** even with inline stuff\n</code></pre></div>",
         )
 
+    def test_quote(self):
+        md = """
+    >This is **bolded** quote
+    >text in a blockquote
+    >tag here
+
+    >This is another quote with _italic_ text and `code` here
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><blockquote>This is <b>bolded</b> quote text in a blockquote tag here</blockquote><blockquote>This is another quote with <i>italic</i> text and <code>code</code> here</blockquote></div>",
+        )
+
+    def test_unordered_list(self):
+        md = """
+    - This is an unordered list
+    - testing another line
+    - li tags within a ul tag
+    - final line of the unordered list
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ul><li>This is an unordered list</li><li>testing another line</li><li>li tags within a ul tag</li><li>final line of the unordered list</li></ul></div>",
+        )
+
+    def test_ordered_list(self):
+        md = """
+    1. This is an ordered list
+    2. testing another line
+    3. li tags within a ol tag
+    4. final line of the ordered list
+
+    """
+
+        node = markdown_to_html_node(md)
+        html = node.to_html()
+        self.assertEqual(
+            html,
+            "<div><ol><li>This is an ordered list</li><li>testing another line</li><li>li tags within a ol tag</li><li>final line of the ordered list</li></ol></div>",
+        )
+
+    def test_clean_lines(self): 
+            block = """
+        >This is a line that needs to be cleaned
+        >This is a second line that needs the quote marker removed
+
+        """
+            clean = clean_lines(block, ">")
+            self.assertEqual(
+                clean, "This is a line that needs to be cleaned This is a second line that needs the quote marker removed"
+            )
+
+
 if __name__ == "__main__":
     unittest.main()
