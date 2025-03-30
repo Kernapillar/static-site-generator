@@ -69,7 +69,7 @@ def markdown_to_html_node(markdown):
                 pre = ParentNode("pre", [code])
                 child_list.append(pre)
             case BlockType.QUOTE: 
-                block = clean_lines(block, ">")
+                block = clean_lines(block, "> ")
                 children = text_to_children(block)
                 quote = ParentNode("blockquote", children)
                 child_list.append(quote)
