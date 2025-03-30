@@ -48,8 +48,9 @@ def generate_page(from_path, template_path, dest_path):
         template = t.read()
         markdown_str = markdown_to_html_node(markdown).to_html()
         title = extract_title(markdown)
-        html_output = template.replace('{{ Title }}', title).replace('{{ Content }}', markdown_str)
-        # print(html_output)
+        # blockquote fix 
+        html_output = template.replace('{{ Title }}', title).replace('{{ Content }}', markdown_str).replace("<blockquote> ", "<blockquote>")
+        print(html_output)
         output_file.write(html_output)
 
 main()
