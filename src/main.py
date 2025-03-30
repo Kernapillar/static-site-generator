@@ -33,8 +33,15 @@ def static_to_public():
                 os.mkdir(dest_path)
                 new_current_path = os.path.join(current_path, item)
                 copy_over(new_current_path)
-
     copy_over()
 
+
+def extract_title(markdown): 
+    lines = markdown.split("\n")
+    for line in lines: 
+        line = line.strip()
+        if len(line) > 2 and line[0] == "#" and line[1] != "#": 
+            return line[1:].strip()
+    raise Exception("No h1 title found")
 
 main()
