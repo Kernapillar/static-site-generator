@@ -37,6 +37,10 @@ def extract_title(markdown):
 
 def generate_page(from_path, template_path, dest_path):
     print(f"Generating page from {from_path} to {dest_path} using {template_path}")
+    dirs = dest_path.replace("/index.html", "")
+    print("testing dirs" + dirs)
+    if not os.path.exists(dirs): 
+        os.makedirs(dirs)
     with open(from_path) as f, open(template_path) as t, open(dest_path, "w") as output_file:
         markdown = f.read()
         template = t.read()
