@@ -1,6 +1,7 @@
 import unittest
 
 from blocks import *
+from generate_page import *
 
 
 class TestMarkdownConverter(unittest.TestCase):
@@ -242,11 +243,11 @@ class TestMarkdownConverter(unittest.TestCase):
 
     def test_clean_lines(self): 
             block = """
-        >This is a line that needs to be cleaned
-        >This is a second line that needs the quote marker removed
+        > This is a line that needs to be cleaned
+        > This is a second line that needs the quote marker removed
 
         """
-            clean = clean_lines(block, ">")
+            clean = clean_lines(block, "> ")
             self.assertEqual(
                 clean, "This is a line that needs to be cleaned This is a second line that needs the quote marker removed"
             )
