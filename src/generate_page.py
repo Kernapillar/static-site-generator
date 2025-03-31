@@ -46,7 +46,7 @@ def generate_page(from_path, template_path, dest_path, basepath):
         markdown_str = markdown_to_html_node(markdown).to_html()
         title = extract_title(markdown)
         html_output = template.replace('{{ Title }}', title).replace('{{ Content }}', markdown_str)
-        final_html_output = html_output.replace('href="/', f'href="{basepath}').replace('src=/',f'src={basepath}')
+        final_html_output = html_output.replace('href="/', f'href="{basepath}').replace('src="/',f'src="{basepath}')
         output_file.write(final_html_output)
 
 def generate_pages_recursive(dir_path_content, template_path, dest_dir_path, basepath):
