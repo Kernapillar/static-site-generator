@@ -105,8 +105,9 @@ def eval_header(block):
             return count
         
 def clean_lines(block, char): 
-    lines = block.split()
-    lines = list(map(lambda line: line.lstrip(f"{char}"), lines))
+    lines = block.split("\n")
+    lines = list(map(lambda line: line.lstrip(f"{char}").strip(), lines))
+    lines = list(filter(lambda line: len(line) > 0, lines))
     return " ".join(lines)
 
 def format_list(lines, ordered=False): 
