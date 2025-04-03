@@ -1,7 +1,5 @@
 import unittest
-
 from main import *
-
 
 class TestMarkdownConverter(unittest.TestCase):
 

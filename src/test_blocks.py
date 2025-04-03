@@ -3,7 +3,6 @@ import unittest
 from blocks import *
 from generate_page import *
 
-
 class TestMarkdownConverter(unittest.TestCase):
 
     def test_markdown_to_blocks(self):
@@ -47,8 +46,6 @@ class TestMarkdownConverter(unittest.TestCase):
                 "- This is a list\n- with items",
             ],
         )
-
-
 
     def test_markdown_to_blocks_extra_whitespace(self):
         md = """
@@ -144,7 +141,6 @@ class TestMarkdownConverter(unittest.TestCase):
     This is another paragraph with _italic_ text and `code` here
 
     """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
@@ -161,7 +157,6 @@ class TestMarkdownConverter(unittest.TestCase):
     #This is another header with _italic_ text and `code` here
 
     """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
@@ -184,7 +179,6 @@ class TestMarkdownConverter(unittest.TestCase):
     the **same** even with inline stuff
     ```
     """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
@@ -201,7 +195,6 @@ class TestMarkdownConverter(unittest.TestCase):
     >This is another quote with _italic_ text and `code` here
 
     """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(
@@ -233,7 +226,6 @@ class TestMarkdownConverter(unittest.TestCase):
     4. final line of the ordered list
 
     """
-
         node = markdown_to_html_node(md)
         html = node.to_html()
         self.assertEqual(

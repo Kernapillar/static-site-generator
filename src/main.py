@@ -7,6 +7,4 @@ def main():
     static_to_docs()
     generate_pages_recursive("content", "template.html", "docs", basepath)
 
-
-
 main()
